@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parametric 3D Print Foundry — MakerWorld Ready & Web3 Storefront</title>
+    <meta name="description" content="100% Zero-Support Parametric OpenSCAD 3D Models. Download free STLs or buy commercial licenses directly on Base Mainnet.">
+    <meta name="theme-color" content="#0d1117">
+    <link rel="canonical" href="https://manhtungnguyen940610.github.io/parametric-3d-foundry/" />
+    <style>
+        :root {
+            --bg: #090d16;
+            --card-bg: rgba(18, 24, 38, 0.85);
+            --border: #232d42;
+            --accent: #0052ff; /* Base Blue */
+            --accent-hover: #1a66ff;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --success: #238636;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        body { background-color: var(--bg); color: var(--text); line-height: 1.6; padding-bottom: 60px; }
+        header {
+            background: linear-gradient(180deg, #131b2e 0%, var(--bg) 100%);
+            padding: 50px 20px 30px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+        .header-title { font-size: 2.4rem; font-weight: 800; margin-bottom: 10px; color: #fff; }
+        .header-subtitle { color: var(--text-muted); font-size: 1.1rem; max-width: 700px; margin: 0 auto 20px; }
+        .wallet-badge {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(0, 82, 255, 0.15);
+            border: 1px solid rgba(0, 82, 255, 0.4);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #58a6ff;
+        }
+        .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+        .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 30px; }
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s, border-color 0.2s;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        }
+        .card:hover { transform: translateY(-4px); border-color: var(--accent); }
+        .card-img-wrap { position: relative; background: #000; width: 100%; aspect-ratio: 5/4; overflow: hidden; }
+        .card-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .badge {
+            position: absolute; top: 12px; right: 12px;
+            background: rgba(35, 134, 54, 0.9);
+            color: #fff; padding: 4px 10px; border-radius: 6px;
+            font-size: 0.75rem; font-weight: bold; text-transform: uppercase;
+        }
+        .card-body { padding: 22px; display: flex; flex-direction: column; flex-grow: 1; }
+        .card-cat { font-size: 0.78rem; color: #58a6ff; text-transform: uppercase; font-weight: 700; margin-bottom: 6px; }
+        .card-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 4px; color: #fff; }
+        .model-id { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 14px; }
+        .specs-list { list-style: none; font-size: 0.88rem; color: #c9d1d9; margin-bottom: 20px; flex-grow: 1; }
+        .specs-list li { margin-bottom: 6px; }
+        .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center;
+            padding: 10px 14px; border-radius: 8px; font-weight: 600; font-size: 0.9rem;
+            text-decoration: none; cursor: pointer; border: none; transition: background 0.15s;
+        }
+        .btn-primary { background: #238636; color: #fff; }
+        .btn-primary:hover { background: #2ea043; }
+        .btn-secondary { background: #21262d; color: #c9d1d9; border: 1px solid var(--border); }
+        .btn-secondary:hover { background: #30363d; color: #fff; }
+        .btn-web3 {
+            width: 100%; background: linear-gradient(90deg, #0052ff, #0045d8);
+            color: #fff; padding: 12px; font-size: 0.88rem; border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 82, 255, 0.3);
+        }
+        .btn-web3:hover { background: linear-gradient(90deg, #1a66ff, #0052ff); }
+        
+        /* Modal styling */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
+        .modal.active { display: flex; }
+        .modal-content {
+            background: #161b22; border: 1px solid var(--border); border-radius: 12px;
+            max-width: 480px; width: 100%; padding: 28px; box-shadow: 0 16px 40px rgba(0,0,0,0.6);
+        }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+        .modal-close { background: none; border: none; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; }
+        .pay-option {
+            background: #0d1117; border: 1px solid var(--border); border-radius: 8px;
+            padding: 14px; margin-bottom: 12px; cursor: pointer; transition: border-color 0.2s;
+        }
+        .pay-option:hover { border-color: var(--accent); }
+        .pay-option h4 { font-size: 1rem; color: #fff; margin-bottom: 4px; }
+        .pay-option p { font-size: 0.85rem; color: var(--text-muted); }
+        #pay-status { margin-top: 15px; font-size: 0.88rem; text-align: center; min-height: 24px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1 class="header-title">🖨️ Parametric 3D Print Foundry</h1>
+    <p class="header-subtitle">100% Zero-Support Parametric OpenSCAD Designs. Verified watertight solids engineered for MakerWorld Customizer and rapid desktop 3D printing.</p>
+    <div class="wallet-badge">
+        <span>⚡ Base Mainnet Payouts: <code>0x558d...6684</code></span>
+    </div>
+</header>
+
+<div class="container">
+    <div class="gallery">
+        
+        <div class="card" id="scad_001_cable_clamp">
+            <div class="card-img-wrap">
+                <img src="models/scad_001_cable_clamp/preview_grid.png" alt="Parametric Under-Desk & Wall Multi-Cable Clamp" loading="lazy" />
+                <span class="badge zero-support">100% Zero-Support</span>
+            </div>
+            <div class="card-body">
+                <span class="card-cat">Cable Management / Organization</span>
+                <h3 class="card-title">Parametric Under-Desk & Wall Multi-Cable Clamp</h3>
+                <p class="model-id"><code>scad_001_cable_clamp</code></p>
+                <ul class="specs-list">
+                    <li><strong>num_slots:</strong> 1 to 8 cables</li><li><strong>cable_diameter:</strong> 3.0 to 12.0 mm</li><li><strong>clamp_style:</strong> Screw (Countersunk M3/M4) or VHB Tape channel</li><li><strong>lip_retention:</strong> Snap-in retention tabs</li>
+                </ul>
+                <div class="actions">
+                    <a href="models/scad_001_cable_clamp/scad_001_cable_clamp.stl" download class="btn btn-primary">⬇️ Download STL</a>
+                    <a href="models/scad_001_cable_clamp/scad_001_cable_clamp.scad" download class="btn btn-secondary">📐 SCAD Source</a>
+                </div>
+                <div class="license-section">
+                    <button class="btn btn-web3" onclick="openPaymentModal('scad_001_cable_clamp', 'Parametric Under-Desk & Wall Multi-Cable Clamp')">
+                        💎 Buy Commercial License / Tip ($5 USDC / 0.0015 ETH)
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<!-- Web3 Payment Modal -->
+<div class="modal" id="payModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitle">Commercial License</h3>
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+        </div>
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 16px;">
+            Support open-source CAD engineering or acquire a perpetual commercial print license on <strong>Base Mainnet</strong>.
+        </p>
+
+        <div class="pay-option" onclick="payWithBaseUSDC()">
+            <h4>💵 Pay $5.00 USDC (Recommended)</h4>
+            <p>Direct smart contract transfer on Base (Ultra-low gas fees &lt; $0.01)</p>
+        </div>
+
+        <div class="pay-option" onclick="payWithBaseETH()">
+            <h4>💎 Pay 0.0015 ETH (~$4 - $5)</h4>
+            <p>Direct native ETH transfer on Base Mainnet</p>
+        </div>
+
+        <div id="pay-status"></div>
+    </div>
+</div>
+
+<script>
+const RECIPIENT = "0x558dF083eE52Fd344055b01943b55f96259F6684";
+const USDC_CONTRACT = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913";
+const BASE_CHAIN_ID = "0x2105"; // 8453 decimal
+
+let activeModelId = "";
+
+function openPaymentModal(id, title) {
+    activeModelId = id;
+    document.getElementById("modalTitle").innerText = "Commercial License: " + title;
+    document.getElementById("pay-status").innerHTML = "";
+    document.getElementById("payModal").classList.add("active");
+}
+
+function closeModal() {
+    document.getElementById("payModal").classList.remove("active");
+}
+
+async function ensureBaseNetwork() {
+    if (!window.ethereum) {
+        throw new Error("No Web3 wallet found. Please install MetaMask, Coinbase Wallet, or Rabby.");
+    }
+    try {
+        await window.ethereum.request({
+            method: "wallet_switchEthereumChain",
+            params: [{ chainId: BASE_CHAIN_ID }]
+        });
+    } catch (err) {
+        if (err.code === 4902) {
+            await window.ethereum.request({
+                method: "wallet_addEthereumChain",
+                params: [{
+                    chainId: BASE_CHAIN_ID,
+                    chainName: "Base",
+                    rpcUrls: ["https://mainnet.base.org"],
+                    nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
+                    blockExplorerUrls: ["https://basescan.org"]
+                }]
+            });
+        } else {
+            throw err;
+        }
+    }
+}
+
+async function payWithBaseETH() {
+    const status = document.getElementById("pay-status");
+    try {
+        status.innerHTML = "⏳ Connecting to Base wallet...";
+        await ensureBaseNetwork();
+        const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+        status.innerHTML = "⏳ Confirming 0.0015 ETH in wallet...";
+        
+        // 0.0015 ETH = 1500000000000000 wei = 0x5543df729c000
+        const txHash = await window.ethereum.request({
+            method: "eth_sendTransaction",
+            params: [{
+                from: accounts[0],
+                to: RECIPIENT,
+                value: "0x5543df729c000"
+            }]
+        });
+        status.innerHTML = `🎉 <b>Payment Successful!</b><br><a href="https://basescan.org/tx/${txHash}" target="_blank" style="color:#58a6ff;">View on Basescan ↗</a>`;
+    } catch (err) {
+        status.innerHTML = `<span style="color:#ff7b72;">❌ Error: ${err.message || err}</span>`;
+    }
+}
+
+async function payWithBaseUSDC() {
+    const status = document.getElementById("pay-status");
+    try {
+        status.innerHTML = "⏳ Connecting to Base wallet...";
+        await ensureBaseNetwork();
+        const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+        status.innerHTML = "⏳ Confirming 5.00 USDC transfer on Base...";
+
+        // ERC20 transfer(address,uint256) -> method: 0xa9059cbb
+        // Recipient address padded to 32 bytes
+        const cleanRecipient = RECIPIENT.toLowerCase().replace("0x", "").padStart(64, "0");
+        // 5 USDC = 5,000,000 = 0x4c4b40 padded to 32 bytes
+        const cleanAmount = (5000000).toString(16).padStart(64, "0");
+        const data = "0xa9059cbb" + cleanRecipient + cleanAmount;
+
+        const txHash = await window.ethereum.request({
+            method: "eth_sendTransaction",
+            params: [{
+                from: accounts[0],
+                to: USDC_CONTRACT,
+                data: data
+            }]
+        });
+        status.innerHTML = `🎉 <b>Payment Successful!</b><br><a href="https://basescan.org/tx/${txHash}" target="_blank" style="color:#58a6ff;">View on Basescan ↗</a>`;
+    } catch (err) {
+        status.innerHTML = `<span style="color:#ff7b72;">❌ Error: ${err.message || err}</span>`;
+    }
+}
+</script>
+
+</body>
+</html>
